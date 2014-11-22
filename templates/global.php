@@ -10,5 +10,5 @@
 	$db_host = "oniddb.cws.oregonstate.edu";
 	$db_user = "";
 	$db_pass = "";
-	$db_data = $db_user;=
+	$db_data = $db_user;
 ?>

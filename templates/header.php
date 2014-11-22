@@ -10,9 +10,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?php echo $website_desc; ?>">
-    <meta name="author" content="<?php echo $website_authors; ?>">
+    <meta name="author" content="<?php echo $website_author; ?>">
 
-    <title><?php echo $page_title; ?> - <?php echo $website_title; ?></title>
+    <title><?php echo $page_title; ?> - <?php echo $website_name; ?></title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
