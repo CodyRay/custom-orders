@@ -13,7 +13,7 @@
     //We need to handle the case that we are updating the data
     if(!$new && !$post) { //If we use post it could overwrite data
         $query = get_customer($_REQUEST['CustomerID']);
-        $data = array_unique(array_merge($_REQUEST, $query));
+        $data = $_REQUEST + $query;
     }
     else {
         $data = $_REQUEST;

@@ -1,32 +1,34 @@
 <?php
+	include("inc/sql_queries.php");
+
 	$page_title = "Plant";
 
     //Is the user submiting the form?
     $post = $_SERVER['REQUEST_METHOD'] == "POST"; //Bool
 
     //Is the entry going to be new or updating?
-    $new = !(isset($_REQUEST['plantid']) && !empty($_REQUEST['plantid'])); //Bool
+    $new = !(isset($_REQUEST['PlantID']) && !empty($_REQUEST['PlantID'])); //Bool
 	$page_subtitle = $new ? "Create" : "Edit";
 	
-	if(isset($_REQUEST['plantid']) && !empty($_REQUEST['plantid'])) {
-        $plantid = $_REQUEST['plantid']; 
+	if(isset($_REQUEST['PlantID']) && !empty($_REQUEST['PlantID'])) {
+        $PlantID = $_REQUEST['PlantID']; 
     }
     else {
-        $plantid = NULL;
+        $PlantID = NULL;
     }
 	
-	if(isset($_REQUEST['containerid']) && !empty($_REQUEST['containerid'])) {
-        $containerid = $_REQUEST['containerid']; 
+	if(isset($_REQUEST['ContainerID']) && !empty($_REQUEST['ContainerID'])) {
+        $ContainerID = $_REQUEST['ContainerID']; 
     }
     else {
-        $containerid = NULL;
+        $ContainerID = NULL;
     }
 
     //We need to handle the case that we are updating the data
     if(!$new && !$post) { //If we use post it could overwrite data
         //Use this line to get data from the database when you are updating the object
-        $query = array();
-        $data = array_unique(array_merge($_REQUEST, $query));
+        $query = get_plant($PlantID);
+        $data = $_REQUEST + $query;
     }
     else {
         $data = $_REQUEST;
@@ -74,21 +76,26 @@
     
     function update_database() {
 		global $new;
-		global $plantid;
-		global $containerid;
+		global $data;
+		global $PlantID;
+		global $ContainerID;
         /*
         Inserts or Updates the database with the current data
         Child Functions could render error messages (Unlikely)
         */
         if($new) {
             //Insert Function Call Here takes $data
-			$plantid = 2;
-			if($containerid != NULL) { //They gave us a containerid, so we can make a relationship
+			$PlantID = create_plant($data);
+			$data["Quantity"] = 1;
+			$data["PlantID"] = $PlantID;
+			if($ContainerID != NULL) { //They gave us a ContainerID, so we can make a relationship
 				//Create ContainerPlant Association
+				$ContainerID = create_container_plant($data);
 			}
         }
         else {
             //Update Function Call Here takes $data
+			update_plant($data);
         }
     }
 
@@ -107,9 +114,9 @@
         <h3 class="panel-title"><?php echo "Successfully " . ($new ? "Created" : "Updated") . "!" ; ?></h3>
     </div>
     <div class="panel-body">
-		<?php if($containerid != NULL): ?>
+		<?php if($ContainerID != NULL): ?>
         <p>Plant has been Created and Added to Container</p>
-        <a href='editcontainer.php?containerid=<?php echo $containerid; ?>' class="btn btn-default">Return to Container</a>
+        <a href='editcontainer.php?ContainerID=<?php echo $ContainerID; ?>' class="btn btn-default">Return to Container</a>
 		<?php else: ?>
         <p>Plant has been Created</p>
         <a href='javascript:window.location.href=window.location.href' class="btn btn-default">Add Another New Plant</a>
@@ -130,9 +137,8 @@
     <div class="panel-body">
         <form method="POST">
 
-          <input name="plantid" type="hidden" value="<?php echo_data("plantid");?>">
-
-          <input name="containerid" type="hidden" value="<?php echo_data("containerid");?>">
+          <input name="PlantID" type="hidden" value="<?php echo_data("PlantID");?>">
+          <input name="ContainerID" type="hidden" value="<?php echo_data("ContainerID");?>">
 		  
           <div class="form-group">
             <label for="CommonName">Name</label>

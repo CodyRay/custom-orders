@@ -1,32 +1,34 @@
 <?php
+	include("inc/sql_queries.php");
+	
 	$page_title = "Container";
 
     //Is the user submiting the form?
     $post = $_SERVER['REQUEST_METHOD'] == "POST"; //Bool
 
     //Is the entry going to be new or updating?
-    $new = !(isset($_REQUEST['containerid']) && !empty($_REQUEST['containerid'])); //Bool
+    $new = !(isset($_REQUEST['ContainerID']) && !empty($_REQUEST['ContainerID'])); //Bool
 	$page_subtitle = $new ? "Create" : "Edit";
 
-	if(isset($_REQUEST['containerid']) && !empty($_REQUEST['containerid'])) {
-        $containerid = $_REQUEST['containerid']; 
+	if(isset($_REQUEST['ContainerID']) && !empty($_REQUEST['ContainerID'])) {
+        $ContainerID = $_REQUEST['ContainerID']; 
     }
     else {
-        $containerid = NULL;
+        $ContainerID = NULL;
     }
 	
-	if(isset($_REQUEST['orderid']) && !empty($_REQUEST['orderid'])) {
-        $orderid = $_REQUEST['orderid']; 
+	if(isset($_REQUEST['OrderID']) && !empty($_REQUEST['OrderID'])) {
+        $OrderID = $_REQUEST['OrderID']; 
     }
     else {
-        $orderid = NULL;
+        $OrderID = NULL;
     }
 	
     //We need to handle the case that we are updating the data
     if(!$new && !$post) { //If we use post it could overwrite data
         //Use this line to get data from the database when you are updating the object
-        $query = array();
-        $data = array_unique(array_merge($_REQUEST, $query));
+        $query = get_container($ContainerID);
+        $data = $_REQUEST + $query;
     }
     else {
         $data = $_REQUEST;
@@ -72,7 +74,8 @@
 
     
     function update_database() {
-		global $containerid;
+		global $data;
+		global $ContainerID;
 		global $new;
         /*
         Inserts or Updates the database with the current data
@@ -80,10 +83,11 @@
         */
         if($new) {
             //Insert Function Call Here takes $data
-			$containerid = 2;
+			$ContainerID = create_container($data);
         }
         else {
             //Update Function Call Here takes $data
+			update_container($data);
         }
     }
 
@@ -92,7 +96,7 @@
 //////////////////////////////////
 
 	include("templates/header.php");
-if((!$new && $containerid != NULL)):
+if( ( $new && $OrderID != NULL ) || ( !$new && $ContainerID != NULL ) ):
     if(validate_submit()): //If Valid and Submited, Render Success Message; else form...
         update_database();
 
@@ -104,7 +108,7 @@ if((!$new && $containerid != NULL)):
     </div>
     <div class="panel-body">
         <p>The Container Has been Successfully Updated</p>
-        <a href='editcontainer.php?containerid=<?php echo $containerid; //FIX ME ?>' class="btn btn-default">Continue</a>
+        <a href='editcontainer.php?ContainerID=<?php echo $ContainerID; //FIX ME ?>' class="btn btn-default">Continue</a>
     </div>
 </div>
 <?php //End Success
@@ -121,8 +125,8 @@ if((!$new && $containerid != NULL)):
     <div class="panel-body">
         <form method="POST">
 
-          <input name="containerid" type="hidden" value="<?php echo_data($data,"containerid");?>">
-		  <input name="orederid" type="hidden" value="<?php echo_data($data,"orderid");?>">
+          <input name="ContainerID" type="hidden" value="<?php echo_data($data,"ContainerID");?>">
+		  <input name="OrderID" type="hidden" value="<?php echo_data($data,"OrderID");?>">
 		  
           <div class="form-group">
             <label for="Shape">Container Shape</label>
@@ -312,8 +316,7 @@ if((!$new && $containerid != NULL)):
 	
 	
 	
-	$plants = array(array("PlantID" => 1, "Name" => "Black Hole", "ScientificName" => "Plantis Domesticus", "Color" => "Black")); //FIX ME
-    //$plants = selectplantsfromcontainer($containerid);
+    $plants = select_plants_from_container($ContainerID);
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -338,11 +341,11 @@ if((!$new && $containerid != NULL)):
         foreach($plants as $row):
 ?>
                 <tr>
-                    <td class="text-center"><a href="<?php echo "editplant.php?plantid=".$row['PlantID']; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                    <td><?php echo_data($row, 'Name'); ?></td>
+                    <td class="text-center"><a href="<?php echo "editplant.php?PlantID=".$row['PlantID']; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                    <td><?php echo_data($row, 'CommonName'); ?></td>
                     <td><?php echo_data($row, 'ScientificName'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>
-					<td class="text-center"><a href="<?php echo "removeplant.php?containerid=".$containerid."&plantid=".$row['PlantID']; ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+					<td class="text-center"><a href="<?php echo "removeplant.php?ContainerID=".$ContainerID."&PlantID=".$row['PlantID']; ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
                 </tr>
 <?php 
         endforeach; 
@@ -369,7 +372,14 @@ if((!$new && $containerid != NULL)):
 <?php
 else:
 ?>
-
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Error</h3>
+		</div>
+		<div class="panel-body">
+			<p>We are missing some information necessary to display this page. This page requires the ContainerID before an existing Container can be edited, OrderID to create a new Conatiner</p>
+		</div>
+	</div>
 <?php 
 endif;
 	include("templates/footer.php");

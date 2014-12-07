@@ -90,15 +90,15 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "vieworder.php?orderid=".$row['OrderID'];
+            $rowlink = "vieworder.php?OrderID=".$row['OrderID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
                     <td><?php echo_data($row, 'DateOrdered'); ?></td>
                     <td><?php echo_data($row, 'QuotedPrice'); ?></td>
-                    <td><?php echo_data($row, 'Paid'); ?></td>
+                    <td><?php echo_data($row, 'TotalPaid'); ?></td>
                     <td class="text-center"><span class="glyphicon <?php echo $row['Complete'] ? "glyphicon-ok": "glyphicon-remove"; ?>"></span></td>
-                    <td class="text-center"><span class="glyphicon <?php echo $row['PickUp'] ? "glyphicon-ok": "glyphicon-remove"; ?>"></span></td>
+                    <td class="text-center"><span class="glyphicon <?php echo $row['PickedUp'] ? "glyphicon-ok": "glyphicon-remove"; ?>"></span></td>
                 </tr>
 <?php 
         endforeach; 

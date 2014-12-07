@@ -21,8 +21,7 @@
     if($ContainerID):
 ?>
 <?php 
-    $container = array("ContainerID" => 1, "Shape" => "12inch", "Color" => "Red", "Desc" => "Much Wow", "Weight" => "12lbs"); //FIX ME
-    //$container = getcontainer($ContainerID);
+    $container = get_container($ContainerID);
 ?>
 <div>
 	<div class="panel panel-default">
@@ -67,8 +66,7 @@
 		</div>
     </div>
 <?php 
-    $data = array(array("PlantID" => 1, "Name" => "Black Hole", "ScientificName" => "Plantis Domesticus", "Color" => "Black")); //FIX ME
-    //$data = selectplantsfromcontainer($ContainerID);
+    $data = select_plants_from_container($ContainerID);
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -90,11 +88,11 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "editplant.php?plantid=".$row['PlantID'];
+            $rowlink = "editplant.php?PlantID=".$row['PlantID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                    <td><?php echo_data($row, 'Name'); ?></td>
+                    <td><?php echo_data($row, 'CommonName'); ?></td>
                     <td><?php echo_data($row, 'ScientificName'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>
                 </tr>

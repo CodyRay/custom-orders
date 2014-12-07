@@ -124,7 +124,7 @@ function create_order($data)
 		}
       
 		//Determine the ID of the Order we just inserted
-		if ($query = $con->prepare("SELECT MAX(OrderID)"))
+		if ($query = $con->prepare("SELECT MAX(OrderID) AS ID FROM Order"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -215,12 +215,12 @@ function update_order($data)
 		//Update our Order in the database
 		if ($query = $con->prepare("REPLACE INTO `Order`(OrderID, DateOrdered, QuotedPrice, TotalPaid, CustomerID, Complete, PickedUp) VALUES (?,?,?,?,?,?,?)"))
 		{
-			$query->bind_param("sddiii", $data["OrderOD"], $data["DateOrdered"], $data["QuotedPrice"], $data["TotalPaid"], $data["CustomerID"], $data["Complete"], $data["PickedUp"]);
+			$query->bind_param("isddiii", $data["OrderID"], $data["DateOrdered"], $data["QuotedPrice"], $data["TotalPaid"], $data["CustomerID"], $data["Complete"], $data["PickedUp"]);
 			$query->execute();
 			if ($query->error)
 			{
 				//If there are errors, display them
-				$error = array($querry->error);
+				$error = array($query->error);
 				render_errors($error, "MySQL Reported an Error Executing a Query");
 				$con->close();
 				return NULL;
@@ -242,9 +242,9 @@ function create_container($data)
 	if ($con = openconnection())
 	{
 		//Insert our Container into the database
-		if ($query = $con->prepare("INSERT INTO Container(Shape, Color, Weight, Desc, Price, OrderID) VALUES (?,?,?,?,?,?)"))
+		if ($query = $con->prepare("INSERT INTO Container(Shape, Color, Weight, `Desc`, Price, OrderID, Quantity) VALUES (?,?,?,?,?,?,?)"))
 		{
-			$query->bind_param("ssdsid", $data["Shape"], $data["Color"], $data["Weight"], $data["Desc"], $data["Price"], $data["OrderID"]);
+			$query->bind_param("ssdsidi", $data["Shape"], $data["Color"], $data["Weight"], $data["Desc"], $data["Price"], $data["OrderID"], $data["Quantity"]);
 			$query->execute();
 			if ($query->error)
 			{
@@ -256,7 +256,7 @@ function create_container($data)
 			}
 		}
 		//Determine the ID of the Container we just inserted
-		if ($query = $con->prepare("SELECT MAX(ContainerID) FROM Container"))
+		if ($query = $con->prepare("SELECT MAX(ContainerID) AS ID FROM Container"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -273,7 +273,7 @@ function create_container($data)
 		while($row = $response->fetch_assoc())
 			$result[] = $row;
 		if(isset($result))
-			return $result[0]["ContianerID"]; //Only one item in array
+			return $result[0]["ID"]; //Only one item in array
 		else
 			return NULL;
 	  
@@ -293,9 +293,9 @@ function update_container($data)
 	if ($con = openconnection())
 	{
 		//Update our Container in the database
-		if ($query = $con->prepare("REPLACE INTO Container(ContainerID, Shape, Color, Weight, Desc, Price, OrderID) VALUES (?,?,?,?,?,?,?)"))
+		if ($query = $con->prepare("REPLACE INTO Container(ContainerID, Shape, Color, Weight, `Desc`, Price, OrderID, Quantity) VALUES (?,?,?,?,?,?,?,?)"))
 		{
-			$query->bind_param("issdsdi", $data["CustomerID"], $data["Shape"], $data["Color"], $data["Weight"], $data["Desc"], $data["Price"], $data["OrderID"]);
+			$query->bind_param("issdsdii", $data["ContainerID"], $data["Shape"], $data["Color"], $data["Weight"], $data["Desc"], $data["Price"], $data["OrderID"], $data["Quantity"]);
 			$query->execute();
 			if ($query->error)
 			{
@@ -329,7 +329,7 @@ function create_container_plant($data)
 			if ($query->error)
 			{
 				//If there are errors, display them
-				$error = array($querry->error);
+				$error = array($query->error);
 				render_errors($error, "MySQL Reported an Error Executing a Query");
 				$con->close();
 				return NULL;
@@ -338,7 +338,7 @@ function create_container_plant($data)
       
 		$con->close();
 		// Returns the ContainerID
-		return $container_id;
+		return $data["ContainerID"];
 	}
 }
 
@@ -390,19 +390,16 @@ function create_plant($data)
 			if ($query->error)
 			{
 				//If there are errors, display them
-				$error = array($querry->error);
+				$error = array($query->error);
 				render_errors($error, "MySQL Reported an Error Executing a Query");
 				$con->close();
 				return NULL;
 			}
 		}
-      
-		// Returns the ContainerID
-		return $container_id;
 	}
    
 	//Determine the ID of the Plant we just inserted
-	if ($query = $con->prepare("SELECT MAX(PlantID) FROM Plant"))
+	if ($query = $con->prepare("SELECT MAX(PlantID) AS ID FROM Plant"))
 	{
 		$query->execute();
 		if ($query->error)
@@ -419,7 +416,7 @@ function create_plant($data)
 		while($row = $response->fetch_assoc())
 			$result[] = $row;
 		if(isset($result))
-				return $result[0]["PlantID"]; //Only one item in array
+				return $result[0]["ID"]; //Only one item in array
 		else
 			return NULL;
 	  
@@ -438,14 +435,14 @@ function update_plant($data)
    if ($con = openconnection())
    {
       //Update our Plant in the database
-      if ($query = $con->prepare("REPLACE INTO Plant(CommonName, ScientificName, Color, Picture) VALUES (?,?,?)"))
+      if ($query = $con->prepare("REPLACE INTO Plant(PlantID, CommonName, ScientificName, Color, Picture) VALUES (?,?,?,?,?)"))
       {
 		$query->bind_param("issss", $data["PlantID"], $data["CommonName"], $data["ScientificName"], $data["Color"], $data["Picture"]);
 		$query->execute();
 		if ($query->error)
 		{
 			//If there are errors, display them
-			$error = array($querry->error);
+			$error = array($query->error);
 			render_errors($error, "MySQL Reported an Error Executing a Query");
 			$con->close();
 			return NULL;
@@ -525,7 +522,7 @@ function remove_plant($container_id, $plant_id)
 	if ($con = openconnection())
 	{
 		// Removes the Plant from the ContainerPlant
-		if ($query = $con->prepare("DELETE FROM ContainerPlant WHERE PlantID = ? AND ContainerID = ?"))
+		if ($query = $con->prepare("DELETE FROM ContainerPlant WHERE ContainerID = ? AND PlantID = ? "))
 		{
 			$query->bind_param("ii", $container_id, $plant_id);
 			$query->execute();
@@ -629,7 +626,7 @@ function select_plants_from_container($container_id)
 		// Get the Containers
 		if ($query = $con->prepare("SELECT * FROM Container, ContainerPlant, Plant
 			WHERE Container.ContainerID = ContainerPlant.ContainerID AND Plant.PlantID = ContainerPlant.PlantID
-				AND ContainerID = ?"))
+				AND Container.ContainerID = ?"))
 		{
 			$query->bind_param("i", $container_id);
 			$query->execute();
@@ -655,7 +652,8 @@ function select_plants_from_container($container_id)
 	}
 }
 
-/* Function: get_customer()
+/*
+ * Function: get_customer()
  * Description: Gets a single customer from the database
  * Parameters: The CustomerID
  * Returns: The resulting row
@@ -691,7 +689,8 @@ function get_customer($customer_id)
 	}
 }
 
-/* Function: get_order()
+/* 
+ * Function: get_order()
  * Description: Gets a single Order from the database
  * Parameters: The OrderID
  * Returns: The resulting row
@@ -701,8 +700,9 @@ function get_order($order_id)
 	if ($con = openconnection())
 	{
 		// Get the Order
-		if ($query = $con->prepare("SELECT * FROM `Order`
-			WHERE OrderID = ?"))
+		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
+			WHERE `Order`.OrderID = ?
+				AND Customer.CustomerID = `Order`.CustomerID"))
 		{
 			$query->bind_param("i", $order_id);
 			$query->execute();
@@ -728,7 +728,8 @@ function get_order($order_id)
 	}
 }
 
-/* Function: get_container()
+/*
+ * Function: get_container()
  * Description: Gets a single Container from the database
  * Parameters: The ContainerID
  * Returns: The resulting row
@@ -742,6 +743,44 @@ function get_container($container_id)
 			WHERE ContainerID = ?"))
 		{
 			$query->bind_param("i", $container_id);
+			$query->execute();
+			if ($query->error)
+			{
+				//If there are errors, display them
+				$error = array($querry->error);
+				render_errors($error, "MySQL Reported an Error Executing a Query");
+				$con->close();
+				return NULL;
+			}
+		}
+
+		$response = $query->get_result();
+		while($row = $response->fetch_assoc())
+			$result[] = $row;
+		if(isset($result))
+			return $result[0]; // Returning the entire array
+		else
+			return NULL;
+		
+		$con->close();
+	}
+}
+
+/*
+ * Function: get_plant()
+ * Description: Gets a single Plant from the database
+ * Parameters: The PlantID
+ * Returns: The resulting row
+ */
+function get_plant($plant_id)
+{
+	if ($con = openconnection())
+	{
+		// Get the Container
+		if ($query = $con->prepare("SELECT * FROM Plant
+			WHERE PlantID = ?"))
+		{
+			$query->bind_param("i", $plant_id);
 			$query->execute();
 			if ($query->error)
 			{
@@ -833,7 +872,8 @@ function select_all_orders()
 	}
 }
 
-/* Function: select_all_incomplete_orders()
+/* 
+ * Function: select_all_incomplete_orders()
  * Description: Selects all the orders that have still not been completed
  */
 function select_all_incomplete_orders()

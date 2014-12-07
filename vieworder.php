@@ -21,9 +21,8 @@
     if($OrderID):
 ?>
 <?php 
-    $order = array("OrderID" => 10, "DateOrdered" => "2014-01-01", "QuotedPrice" => 100.00, "Paid" => 0.00, "CustomerID" => 1, "Complete" => True, "PickUp" => False, "CustomerName" => "Cody Ray Hoeft"); //FIX ME
-    //$order = getorder($OrderID);
-    $customerlink = "viewcustomer.php?customerid=".$order['CustomerID'];
+    $order = get_order($OrderID);
+    $customerlink = "viewcustomer.php?CustomerID=".$order['CustomerID'];
 ?>
 <div>
 	<div class="panel panel-default">
@@ -49,20 +48,20 @@
                     </tr>
                     <tr>
                         <td colspan="2">Price Paid</td>
-                        <td><?php echo_data($order, 'Paid'); ?></td>
+                        <td><?php echo_data($order, 'TotalPaid'); ?></td>
                     </tr>
                     <tr data-href="<?php echo $customerlink; ?>">
                         <td>Customer Name</td>
                         <td class="text-center"><a href="<?php echo $customerlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
-                        <td><?php echo_data($order, 'CustomerName'); ?></td>
+                        <td><?php echo_data($order, 'Name'); ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">Complete?</td>
-                        <td><span class="glyphicon <?php echo $row['Complete'] ? "glyphicon-ok": "glyphicon-remove"; ?>"></span></td>
+                        <td><span class="glyphicon <?php echo $order['Complete'] ? "glyphicon-ok" : "glyphicon-remove"; ?>"></span></td>
                     </tr>
                     <tr>
                         <td colspan="2">Picked Up?</td>
-                        <td><span class="glyphicon <?php echo $row['PickUp'] ? "glyphicon-ok": "glyphicon-remove"; ?>"></span></td>
+                        <td><span class="glyphicon <?php echo $order['PickedUp'] ? "glyphicon-ok" : "glyphicon-remove"; ?>"></span></td>
                     </tr>
                 <tbody>
                 <!--
@@ -77,8 +76,7 @@
 		</div>
     </div>
 <?php 
-    $data = array(array("ContainerID" => 1, "Shape" => "12inch", "Color" => "Red", "Desc" => "Much Wow", "Weight" => "12lbs")); //FIX ME
-    //$data = selectcontainersfromorder($OrderID);
+    $data = select_containers_from_order($OrderID);
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -101,7 +99,7 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "viewcontainer.php?containerid=".$row['ContainerID'];
+            $rowlink = "viewcontainer.php?ContainerID=".$row['ContainerID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>

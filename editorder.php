@@ -41,9 +41,8 @@
 	
     //We need to handle the case that we are updating the data
     if(!$post) { //If we use post it could overwrite data
-        //query = getorder($OrderID);
-        $query = array();
-        $data = array_unique(array_merge($_REQUEST, $query));
+        $query = get_order($OrderID);
+        $data = $_REQUEST + $query;
     }
     else {
         $data = $_REQUEST;
@@ -62,11 +61,11 @@
         //If the method is POST
         if($post) {
             //Validation Rules Here
-            if( empty($data['DateOrdered']) && ( $data["Complete"] || $data["PickUp"] ) )
+            if( empty($data['DateOrdered']) && ( $data["Complete"] || $data["PickedUp"] ) )
                 $form_errors[] = "If the Order has not been ordered, then the Order cannot be completed or picked up";
-			if( !$data["Complete"] && $data["PickUp"] )
+			if( !$data["Complete"] && $data["PickedUp"] )
                 $form_errors[] = "To mark a Order as Picked Up, please mark it as completed too";
-			if( $data["PickUp"] && empty($data["DateOrdered"]) )
+			if( $data["PickedUp"] && empty($data["DateOrdered"]) )
                 $form_errors[] = "Marked as Picked Up, but nothing has been paid";
             //End Validation Rules
             if(!count($form_errors)) {
@@ -81,11 +80,12 @@
 
     
     function update_database() {
+		global $data;
         /*
         Inserts or Updates the database with the current data
         Child Functions could render error messages (Unlikely)
         */
-        //updateorder($data); //FIXME
+        update_order($data);
     }
 
 //////////////////////////////////
@@ -122,6 +122,8 @@ if($OrderID != NULL):
         <form method="POST">
 
           <input name="OrderID" type="hidden" value="<?php echo_data($data,"OrderID");?>">
+		  <input name="CustomerID" type="hidden" value="<?php echo_data($data,"CustomerID");?>">
+
 
           <div class="form-group">
             <label for="DateOrdered">Date Ordered</label>
@@ -134,8 +136,8 @@ if($OrderID != NULL):
           </div>
 
           <div class="form-group">
-            <label for="Paid">Total Paid</label>
-            <input name="Paid" type="number" step="any" class="form-control" placeholder="" value="<?php echo_data($data,"Paid");?>">
+            <label for="TotalPaid">Total Paid</label>
+            <input name="TotalPaid" type="number" step="any" class="form-control" placeholder="" value="<?php echo_data($data,"TotalPaid");?>">
           </div>
 		  <div class="form-group">
 			  <div class="checkbox">
@@ -146,7 +148,7 @@ if($OrderID != NULL):
 
 			  <div class="checkbox">
 				<label>
-				  <input name="PickUp" type="checkbox"  value=0 <?php echo isset($data['Complete']) && $data['Complete'] ? " checked" : "";?>> Picked Up
+				  <input name="PickedUp" type="checkbox"  value=1 <?php echo isset($data['PickedUp']) && $data['PickedUp'] ? " checked" : "";?>> Picked Up
 				</label>
 			  </div>
 		  </div>
@@ -164,8 +166,7 @@ if($OrderID != NULL):
 ?>
 <?php 
 	endif;
-    $containers = array(array("ContainerID" => 1, "Shape" => "12inch", "Color" => "Red", "Desc" => "Much Wow", "Weight" => "12lbs")); //FIX ME
-    //$containers = selectcontainersfromorder($OrderID);
+    $containers = select_containers_from_order($OrderID);
 
 ?>
 	<div class="panel panel-default">
@@ -193,13 +194,13 @@ if($OrderID != NULL):
         foreach($containers as $row):
 ?>
                 <tr>
-                    <td class="text-center"><a href="<?php echo "viewcontainer.php?containerid=".$row['ContainerID']; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+                    <td class="text-center"><a href="<?php echo "viewcontainer.php?ContainerID=".$row['ContainerID']; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
                     <td><?php echo_data($row, 'Shape'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>
                     <td><?php echo_data($row, 'Weight'); ?></td>
                     <td><?php echo_data($row, 'Desc'); ?></td>
-					<td class="text-center"><a href="<?php echo "editcontainer.php?containerid=".$row['ContainerID']; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
-					<td class="text-center"><a href="<?php echo "deletecontainer.php?redirect=editorder.php&containerid=".$row['ContainerID']."&OrderID=".$OrderID.(isset($_REQUEST['admin']) ? "&admin" : ""); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+					<td class="text-center"><a href="<?php echo "editcontainer.php?ContainerID=".$row['ContainerID']; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
+					<td class="text-center"><a href="<?php echo "deletecontainer.php?redirect=editorder.php&ContainerID=".$row['ContainerID']."&OrderID=".$OrderID.(isset($_REQUEST['admin']) ? "&admin" : ""); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
                 </tr>
 <?php 
         endforeach; 
@@ -230,7 +231,7 @@ if($OrderID != NULL):
 				<h3 class="panel-title">Order Actions</h3>
 			</div>
 			<div class="panel-body text-center">
-			<?php if(!$data['submitted']): ?>
+			<?php if(!($data['DateOrdered']="0000-00-00")): ?>
 				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?OrderID=<?php echo $OrderID; ?>">Submit Order</a></p>
 			<?php else: ?>
 				<p><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Cancel Order</a></p>
