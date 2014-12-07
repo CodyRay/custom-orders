@@ -20,6 +20,15 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/sb-admin-2.js"></script>
 
+    <!-- Adds Links to Table Rows -->
+    <script>
+    $('tr').on("click", function() {
+        if($(this).data('href') !== undefined){
+            document.location = $(this).data('href');
+        }
+    });
+    </script>
+
 </body>
 
 </html>

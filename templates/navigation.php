@@ -26,7 +26,28 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="listcustomer.php"><i class="fa fa-users fa-fw"></i> All Customers</a>
+                        </li>
+                        <li>
+                            <a href="editcustomer.php"><i class="fa fa-plus-circle fa-fw"></i> New Customer</a>
+                        </li>
+                        <li>
+                            <a href="listorders.php"><i class="fa fa-wrench fa-fw"></i> Admin<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="listneeded.php">List Needed Plants</a>
+                                </li>
+                                <li>
+                                    <a href="listorders.php">List All Orders</a>
+                                </li>
+                                <li>
+                                    <a href="listbaskets_notpickedup.php">List Baskets that Need to Be Picked Up</a>
+                                </li>
+                                <li>
+                                    <a href="listbaskets_markcomplete.php">List Incomplete Baskets</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
                     </ul>
                 </div>

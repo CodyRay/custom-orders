@@ -1,12 +1,12 @@
 <?php
-	$page_title = "Form";
-	$page_subtitle = "Basic Template";
+	$page_title = "Customer";
 
     //Is the user submiting the form?
     $post = $_SERVER['REQUEST_METHOD'] == "POST"; //Bool
 
     //Is the entry going to be new or updating?
-    $new = !(isset($_REQUEST['hiddenid']) && !empty($_REQUEST['hiddenid'])); //Bool
+    $new = !(isset($_REQUEST['customerid']) && !empty($_REQUEST['customerid'])); //Bool
+	$page_subtitle = $new ? "Create" : "Edit";
 
     //We need to handle the case that we are updating the data
     if(!$new && !$post) { //If we use post it could overwrite data
@@ -31,10 +31,14 @@
         //If the method is POST
         if($post) {
             //Validation Rules Here
-            if(empty($data['formitem']))
-                $form_errors[] = "Required Item: formitem is Blank";
-            if($data['formitem'] == "1")
-                $form_errors[] = "formitem cannot be 1";
+            if(empty($data['Name']))
+                $form_errors[] = "Required Item: Name is Blank";
+            if(empty($data['Address']))
+                $form_errors[] = "Required Item: Address is Blank";
+            if(empty($data['Phone']))
+                $form_errors[] = "Required Item: Phone is Blank";
+            if(empty($data['Email']))
+                $form_errors[] = "Required Item: Email is Blank";
             //End Validation Rules
             if(!count($form_errors)) {
                 $valid = True; 
@@ -86,8 +90,8 @@
         <h3 class="panel-title"><?php echo "Successfully " . ($new ? "Created" : "Updated") . "!" ; ?></h3>
     </div>
     <div class="panel-body">
-        <p>The formitem you entered was <?php echo_data("formitem");?></p>
-        <a href='.' class="btn btn-default">Continue</a>
+        <p>Welcome, <?php echo_data("Name");?></p>
+        <a href='.' class="btn btn-default">Continue FIX ME</a>
     </div>
 </div>
 <?php //End Success
@@ -104,11 +108,23 @@
     <div class="panel-body">
         <form method="POST">
 
-          <input name="hiddenid" type="hidden" value="<?php echo_data("hiddenid");?>">
+          <input name="customerid" type="hidden" value="<?php echo_data("customerid");?>">
 
           <div class="form-group">
-            <label for="formitem">formitem description</label>
-            <input name="formitem" type="text" class="form-control"placeholder="" value="<?php echo_data("formitem");?>">
+            <label for="Name">Name</label>
+            <input name="Name" type="text" class="form-control"placeholder="" value="<?php echo_data("Name");?>">
+          </div>
+          <div class="form-group">
+            <label for="Address">Address</label>
+            <input name="Address" type="text" class="form-control"placeholder="" value="<?php echo_data("Address");?>">
+          </div>
+          <div class="form-group">
+            <label for="Phone">Phone</label>
+            <input name="Phone" type="tel" class="form-control"placeholder="" value="<?php echo_data("Phone");?>">
+          </div>
+          <div class="form-group">
+            <label for="Email">Email</label>
+            <input name="Email" type="email" class="form-control"placeholder="" value="<?php echo_data("Email");?>">
           </div>
 
           <button type="submit" class="btn btn-default">Submit</button>
