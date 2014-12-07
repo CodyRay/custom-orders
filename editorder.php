@@ -230,7 +230,7 @@ if($orderid != NULL):
 				<h3 class="panel-title">Order Actions</h3>
 			</div>
 			<div class="panel-body text-center">
-			<?php if(!$data['submitted']): ?>
+			<?php if(!isset($data['submitted']) || !$data['submitted']): ?>
 				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?orderid=<?php echo $orderid; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?orderid=<?php echo $orderid; ?>">Submit Order</a></p>
 			<?php else: ?>
 				<p><a class="btn btn-danger" href="deleteorder.php?orderid=<?php echo $orderid; ?>">Cancel Order</a></p>

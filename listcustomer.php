@@ -1,7 +1,7 @@
 <?php
 	$page_title = "Customer";
 	$page_subtitle = "List";
-    //include("inc/database.php"); 
+    include("inc/database.php"); 
     include("templates/header.php");
     function echo_data($data, $item) {
         /*

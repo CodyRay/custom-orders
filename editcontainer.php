@@ -356,6 +356,8 @@ if((!$new && $containerid != NULL)):
             </tfoot>
             -->
         </table>
+		<p class="text-center"><span class="btn-group"><a class="btn btn-default" href="editplant.php?containerid=<?php echo $containerid; ?>">Create New Plant</a><a class="btn btn-default" href="editcontainer_addexistingplants.php?containerid=<?php echo $containerid; ?>">Add Plants</a></span></p>
+
 <?php
     else:
 ?>

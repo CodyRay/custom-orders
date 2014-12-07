@@ -1,5 +1,4 @@
 <?php
-	include("database.php");
 	error_reporting(E_ALL);
 	ini_set('display_errors', True);
 	mysqli_report(MYSQLI_REPORT_STRICT);

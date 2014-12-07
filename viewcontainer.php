@@ -80,7 +80,6 @@
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th></th>
                     <th>Name</th>
                     <th>Scientific Name</th>
                     <th>Color</th>
@@ -92,7 +91,6 @@
             $rowlink = "editplant.php?plantid=".$row['PlantID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
-                    <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
                     <td><?php echo_data($row, 'Name'); ?></td>
                     <td><?php echo_data($row, 'ScientificName'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>

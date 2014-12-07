@@ -91,7 +91,7 @@
     </div>
     <div class="panel-body">
         <p>Welcome, <?php echo_data("Name");?></p>
-        <a href='.' class="btn btn-default">Continue FIX ME</a>
+        <a href='viewcustomer.php?customerid=<?php echo $customerid; ?>' class="btn btn-default">View Customer</a>
     </div>
 </div>
 <?php //End Success
