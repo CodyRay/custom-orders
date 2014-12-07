@@ -1,17 +1,18 @@
 <?php
+
+	include("inc/sql_queries.php");
 	$page_title = "Customer";
 
     //Is the user submiting the form?
     $post = $_SERVER['REQUEST_METHOD'] == "POST"; //Bool
 
     //Is the entry going to be new or updating?
-    $new = !(isset($_REQUEST['customerid']) && !empty($_REQUEST['customerid'])); //Bool
+    $new = !(isset($_REQUEST['CustomerID']) && !empty($_REQUEST['CustomerID'])); //Bool
 	$page_subtitle = $new ? "Create" : "Edit";
 
     //We need to handle the case that we are updating the data
     if(!$new && !$post) { //If we use post it could overwrite data
-        //Use this line to get data from the database when you are updating the object
-        $query = array();
+        $query = get_customer($_REQUEST['CustomerID']);
         $data = array_unique(array_merge($_REQUEST, $query));
     }
     else {
@@ -63,15 +64,19 @@
 
     
     function update_database() {
+		global $new;
+		global $data;
         /*
         Inserts or Updates the database with the current data
         Child Functions could render error messages (Unlikely)
         */
         if($new) {
             //Insert Function Call Here takes $data
+			create_customer($data);
         }
         else {
             //Update Function Call Here takes $data
+			update_customer($data);
         }
     }
 
@@ -108,7 +113,7 @@
     <div class="panel-body">
         <form method="POST">
 
-          <input name="customerid" type="hidden" value="<?php echo_data("customerid");?>">
+          <input name="CustomerID" type="hidden" value="<?php echo_data("CustomerID");?>">
 
           <div class="form-group">
             <label for="Name">Name</label>

@@ -1,8 +1,9 @@
 <?php
+	include("inc/sql_queries.php");
+	
 	$page_title = "Order";
 	$page_subtitle = "View";
 	include("templates/header.php"); 
-    include("inc/database.php"); 
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
@@ -11,17 +12,17 @@
             echo $data[$item];
         }
     }
-    if(isset($_REQUEST['orderid']) && !empty($_REQUEST['orderid'])) {
-        $orderid = $_REQUEST['orderid']; 
+    if(isset($_REQUEST['OrderID']) && !empty($_REQUEST['OrderID'])) {
+        $OrderID = $_REQUEST['OrderID']; 
     }
     else {
-        $orderid = NULL;
+        $OrderID = NULL;
     }
-    if($orderid):
+    if($OrderID):
 ?>
 <?php 
     $order = array("OrderID" => 10, "DateOrdered" => "2014-01-01", "QuotedPrice" => 100.00, "Paid" => 0.00, "CustomerID" => 1, "Complete" => True, "PickUp" => False, "CustomerName" => "Cody Ray Hoeft"); //FIX ME
-    //$order = getorder($orderid);
+    //$order = getorder($OrderID);
     $customerlink = "viewcustomer.php?customerid=".$order['CustomerID'];
 ?>
 <div>
@@ -72,12 +73,12 @@
                 </tfoot>
                 -->
             </table>
-            <p class="text-center"><a class="btn btn-info" href="editorder.php?orderid=<?php echo $orderid; ?>">Edit Order</a></p>
+            <p class="text-center"><a class="btn btn-info" href="editorder.php?OrderID=<?php echo $OrderID; ?>">Edit Order</a></p>
 		</div>
     </div>
 <?php 
     $data = array(array("ContainerID" => 1, "Shape" => "12inch", "Color" => "Red", "Desc" => "Much Wow", "Weight" => "12lbs")); //FIX ME
-    //$data = selectcontainersfromorder($orderid);
+    //$data = selectcontainersfromorder($OrderID);
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -139,7 +140,7 @@
 			<h3 class="panel-title">Error</h3>
 		</div>
 		<div class="panel-body">
-			<p>We are missing some information nessasary to display this page. This page requires the orderid before it can be displayed</p>
+			<p>We are missing some information nessasary to display this page. This page requires the OrderID before it can be displayed</p>
 		</div>
 	</div>
 

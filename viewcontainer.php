@@ -1,8 +1,9 @@
 <?php
+	include("inc/sql_queries.php");
+
 	$page_title = "Container";
 	$page_subtitle = "View";
 	include("templates/header.php"); 
-    include("inc/database.php"); 
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
@@ -11,17 +12,17 @@
             echo $data[$item];
         }
     }
-    if(isset($_REQUEST['containerid']) && !empty($_REQUEST['containerid'])) {
-        $containerid = $_REQUEST['containerid']; 
+    if(isset($_REQUEST['ContainerID']) && !empty($_REQUEST['ContainerID'])) {
+        $ContainerID = $_REQUEST['ContainerID']; 
     }
     else {
-        $containerid = NULL;
+        $ContainerID = NULL;
     }
-    if($containerid):
+    if($ContainerID):
 ?>
 <?php 
     $container = array("ContainerID" => 1, "Shape" => "12inch", "Color" => "Red", "Desc" => "Much Wow", "Weight" => "12lbs"); //FIX ME
-    //$container = getcontainer($containerid);
+    //$container = getcontainer($ContainerID);
 ?>
 <div>
 	<div class="panel panel-default">
@@ -62,12 +63,12 @@
                 </tfoot>
                 -->
             </table>
-            <p class="text-center"><a class="btn btn-info" href="editcontainer.php?containerid=<?php echo $containerid; ?>">Edit Container</a></p>
+            <p class="text-center"><a class="btn btn-info" href="editcontainer.php?ContainerID=<?php echo $ContainerID; ?>">Edit Container</a></p>
 		</div>
     </div>
 <?php 
     $data = array(array("PlantID" => 1, "Name" => "Black Hole", "ScientificName" => "Plantis Domesticus", "Color" => "Black")); //FIX ME
-    //$data = selectplantsfromcontainer($containerid);
+    //$data = selectplantsfromcontainer($ContainerID);
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -127,7 +128,7 @@
 			<h3 class="panel-title">Error</h3>
 		</div>
 		<div class="panel-body">
-			<p>We are missing some information nessasary to display this page. This page requires the containerid before it can be displayed</p>
+			<p>We are missing some information nessasary to display this page. This page requires the ContainerID before it can be displayed</p>
 		</div>
 	</div>
 

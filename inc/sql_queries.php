@@ -1,7 +1,22 @@
 <?php
 
-include("global.php");
-include("database.php");
+require_once("global.php");
+
+function openconnection() {
+	global $db_host;
+	global $db_user;
+	global $db_pass;
+	global $db_data;
+	
+    $connection = new mysqli($db_host, $db_user, $db_pass, $db_data);
+
+    if($connection->connect_error) {
+        $error = array("Connect Error (" . mysql_connect_errno() . ") " . mysqli_connect_error());
+        render_errors($error, "There was a mysterious database error...");
+        return false;
+    }
+    return $connection;
+}
 
 /*
  * Function: create_customer()
@@ -28,7 +43,7 @@ function create_customer($data)
 			}
 		}
 		//Determine the ID of the customer we just inserted
-		if ($query->prepare("SELECT MAX(CustomerID) FROM Customer"))
+		if ($query = $con->prepare("SELECT MAX(CustomerID) AS ID FROM Customer"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -45,7 +60,7 @@ function create_customer($data)
 		while($row = $response->fetch_assoc())
 			$result[] = $row;
 		if(isset($result))
-			return $result[0]["CustomerID"]; //Only one item in array
+			return $result[0]["ID"]; //Only one item in array
 		else
 			return NULL;
 	  
@@ -66,7 +81,7 @@ function update_customer($data)
 	{
 		//Update our Customer in the database
 		if ($query = $con->prepare("REPLACE INTO Customer(CustomerID, Name, Address, Phone, Email) VALUES (?,?,?,?,?)"))
-		{
+		{	
 			$query->bind_param("issss", $data["CustomerID"], $data["Name"], $data["Address"], $data["Phone"], $data["Email"]);
 			$query->execute();
 			if ($query->error)
@@ -94,7 +109,7 @@ function create_order($data)
 	if ($con = openconnection())
 	{
 		//Insert our Order into the database
-		if ($query = $con->prepare("INSERT INTO ORDER(DateOrdered, QuotedPrice, TotalPaid, CustomerID, Complete, PickedUp) VALUES (?,?,?,?,?,?)"))
+		if ($query = $con->prepare("INSERT INTO `Order`(DateOrdered, QuotedPrice, TotalPaid, CustomerID, Complete, PickedUp) VALUES (?,?,?,?,?,?)"))
 		{
 			$query->bind_param("sddiii", $data["DateOrdered"], $data["QuotedPrice"], $data["TotalPaid"], $data["CustomerID"], $data["Complete"], $data["PickedUp"]);
 			$query->execute();
@@ -109,7 +124,7 @@ function create_order($data)
 		}
       
 		//Determine the ID of the Order we just inserted
-		if ($query->prepare("SELECT MAX(OrderID)"))
+		if ($query = $con->prepare("SELECT MAX(OrderID)"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -143,10 +158,10 @@ function create_order($data)
  */
 function create_blank_order($customer_id)
 {
-	if ($con = openconnection()
+	if ($con = openconnection())
 	{
 		//Insert our Order into the database
-		if ($query = $con->prepare("INSERT INTO ORDER(CustomerID) VALUES (?)"))
+		if ($query = $con->prepare("INSERT INTO `Order`(CustomerID) VALUES (?)"))
 		{
 			$query->bind_param("i", $customer_id);
 			$query->execute();
@@ -161,9 +176,8 @@ function create_blank_order($customer_id)
 		}
 	
 		//Determine the ID of the Order we just inserted
-		if ($query->prepare("SELECT MAX(OrderID) FROM Order"))
+		if ($query = $con->prepare("SELECT MAX(OrderID) AS ID FROM `Order`"))
 		{
-			$query->bind_param("sddiii", $data["DateOrdered"], $data["QuotedPrice"], $data["TotalPaid"], $data["CustomerID"], $data["Complete"], $data["PickedUp"]);
 			$query->execute();
 			if ($query->error)
 			{
@@ -179,7 +193,7 @@ function create_blank_order($customer_id)
 		while($row = $response->fetch_assoc())
 			$result[] = $row;
 		if(isset($result))
-            return $result[0]["OrderID"]; //Only one item in array
+            return $result[0]["ID"]; //Only one item in array
 		else
 			return NULL;
 	  
@@ -199,7 +213,7 @@ function update_order($data)
 	if ($con = openconnection())
 	{
 		//Update our Order in the database
-		if ($query = $con->prepare("REPLACE INTO Order(OrderID, DateOrdered, QuotedPrice, TotalPaid, CustomerID, Complete, PickedUp) VALUES (?,?,?,?,?,?,?)"))
+		if ($query = $con->prepare("REPLACE INTO `Order`(OrderID, DateOrdered, QuotedPrice, TotalPaid, CustomerID, Complete, PickedUp) VALUES (?,?,?,?,?,?,?)"))
 		{
 			$query->bind_param("sddiii", $data["OrderOD"], $data["DateOrdered"], $data["QuotedPrice"], $data["TotalPaid"], $data["CustomerID"], $data["Complete"], $data["PickedUp"]);
 			$query->execute();
@@ -242,7 +256,7 @@ function create_container($data)
 			}
 		}
 		//Determine the ID of the Container we just inserted
-		if ($query->prepare("SELECT MAX(ContainerID) FROM Container"))
+		if ($query = $con->prepare("SELECT MAX(ContainerID) FROM Container"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -388,7 +402,7 @@ function create_plant($data)
 	}
    
 	//Determine the ID of the Plant we just inserted
-	if ($query->prepare("SELECT MAX(PlantID) FROM Plant"))
+	if ($query = $con->prepare("SELECT MAX(PlantID) FROM Plant"))
 	{
 		$query->execute();
 		if ($query->error)
@@ -453,7 +467,7 @@ function remove_order($order_id)
 	if ($con = openconnection())
 	{
 		// Removes the Order
-		if ($query = $con->prepare("DELETE FROM Order WHERE OrderID = ?"))
+		if ($query = $con->prepare("DELETE FROM `Order` WHERE OrderID = ?"))
 		{
 			$query->bind_param("i", $order_id);
 			$query->execute();
@@ -539,8 +553,8 @@ function select_orders_from_customer($customer_id)
 	if ($con = openconnection())
 	{
 		// Get the Orders
-		if ($query->prepare("SELECT * FROM Order, Customer
-			WHERE Order.CustomerID = Customer.CustomerID AND Customer.CustomerID = ?"))
+		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
+			WHERE `Order`.CustomerID = Customer.CustomerID AND Customer.CustomerID = ?"))
 		{
 			$query->bind_param("i", $customer_id);
 			$query->execute();
@@ -576,8 +590,8 @@ function select_containers_from_order($order_id)
 	if ($con = openconnection())
 	{
 		// Get the Containers
-		if ($query->prepare("SELECT * FROM Container, Order
-			WHERE Container.OrderID = Order.OrderID AND Order.OrderID = ?"))
+		if ($query = $con->prepare("SELECT * FROM Container, `Order`
+			WHERE Container.OrderID = `Order`.OrderID AND `Order`.OrderID = ?"))
 		{
 			$query->bind_param("i", $order_id);
 			$query->execute();
@@ -613,7 +627,7 @@ function select_plants_from_container($container_id)
 	if ($con = openconnection())
 	{
 		// Get the Containers
-		if ($query->prepare("SELECT * FROM Container, ContainerPlant, Plant
+		if ($query = $con->prepare("SELECT * FROM Container, ContainerPlant, Plant
 			WHERE Container.ContainerID = ContainerPlant.ContainerID AND Plant.PlantID = ContainerPlant.PlantID
 				AND ContainerID = ?"))
 		{
@@ -651,8 +665,7 @@ function get_customer($customer_id)
 	if ($con = openconnection())
 	{
 		// Get the Customer
-		if ($query->prepare("SELECT * FROM Customer
-			WHERE CustomerID = ?"))
+		if ($query = $con->prepare("SELECT * FROM Customer WHERE CustomerID = ?"))
 		{
 			$query->bind_param("i", $customer_id);
 			$query->execute();
@@ -688,7 +701,7 @@ function get_order($order_id)
 	if ($con = openconnection())
 	{
 		// Get the Order
-		if ($query->prepare("SELECT * FROM Order
+		if ($query = $con->prepare("SELECT * FROM `Order`
 			WHERE OrderID = ?"))
 		{
 			$query->bind_param("i", $order_id);
@@ -725,7 +738,7 @@ function get_container($container_id)
 	if ($con = openconnection())
 	{
 		// Get the Container
-		if ($query->prepare("SELECT * FROM Container
+		if ($query = $con->prepare("SELECT * FROM Container
 			WHERE ContainerID = ?"))
 		{
 			$query->bind_param("i", $container_id);
@@ -753,6 +766,40 @@ function get_container($container_id)
 }
 
 /*
+ * Function: select_all_customers()
+ * Description: Selects all Customers in the database
+ */
+function select_all_customers()
+{
+	if ($con = openconnection())
+	{
+		// Gets the Customers
+		if ($query = $con->prepare("SELECT * FROM Customer"))
+		{
+			$query->execute();
+			if ($query->error)
+			{
+				//If there are errors, display them
+				$error = array($querry->error);
+				render_errors($error, "MySQL Reported an Error Executing a Query");
+				$con->close();
+				return NULL;
+			}
+		}
+
+		$response = $query->get_result();
+		while($row = $response->fetch_assoc())
+			$result[] = $row;
+		if(isset($result))
+			return $result; // Returning the entire array
+		else
+			return NULL;
+		
+		$con->close();
+	}
+}
+
+/*
  * Function: select_all_orders()
  * Description: Selects all orders in the database
  */
@@ -761,7 +808,7 @@ function select_all_orders()
 	if ($con = openconnection())
 	{
 		// Gets the Orders
-		if ($query->prepare("SELECT * FROM Order"))
+		if ($query = $con->prepare("SELECT * FROM `Order`"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -794,7 +841,7 @@ function select_all_incomplete_orders()
 	if ($con = openconnection())
 	{
 		// Gets the Orders
-		if ($query->prepare("SELECT * FROM Order WHERE Complete = '0'"))
+		if ($query = $con->prepare("SELECT * FROM `Order` WHERE Complete = '0'"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -829,7 +876,7 @@ function select_all_plants()
 	if ($con = openconnection())
 	{
 		// Gets the Plants
-		if ($query->prepare("SELECT * FROM Plant"))
+		if ($query = $con->prepare("SELECT * FROM Plant"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -855,21 +902,21 @@ function select_all_plants()
 }
 
 /*
- * Function: select_all_incomplete_orders()
+ * Function: select_all_needed_plants()
  * Description: Selects and shows all of the plants that will be needed for the current year
  * Returns: The resulting array
  */
-function select_all_incomplete_orders()
+function select_all_needed_plants()
 {
-	if ($con = openconnection()
+	if ($con = openconnection())
 	{
 		// Gets the Plants
-		if ($query->prepare("SELECT Plant.CommonName, Plant.Color, COUNT(ContainerPlant.Quantity) AS Quantity
-			FROM Order, Container, ContainerPlant, Plant
-			WHERE Order.OrderID = Container.OrderID
+		if ($query = $con->prepare("SELECT Plant.CommonName, Plant.Color, COUNT(ContainerPlant.Quantity) AS Quantity
+			FROM `Order`, Container, ContainerPlant, Plant
+			WHERE `Order`.OrderID = Container.OrderID
 				AND Container.ContainerID = ContainerPlant.ContainerID
 				AND Plant.PlantID = ContainerPlant.PlantID
-				AND YEAR(Order.DateOrdered) = YEAR(CURDATE())
+				AND YEAR(`Order`.DateOrdered) = YEAR(CURDATE())
 				GROUP BY Plant.PlantID"))
 		{
 			$query->execute();
@@ -904,7 +951,7 @@ function set_complete($order_id)
 {
 	if ($con = openconnection())
 	{
-		if ($query->prepare("UPDATE TABLE Order SET Complete = '1'
+		if ($query = $con->prepare("UPDATE TABLE `Order` SET Complete = '1'
 			WHERE OrderID=?"))
 		{
 			$query->bind_param("i", $order_id);

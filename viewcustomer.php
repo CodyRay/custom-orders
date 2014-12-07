@@ -1,8 +1,9 @@
 <?php
+	include("inc/sql_queries.php");
+
 	$page_title = "Customer";
 	$page_subtitle = "View";
 	include("templates/header.php"); 
-    include("inc/database.php"); 
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
@@ -11,17 +12,16 @@
             echo $data[$item];
         }
     }
-    if(isset($_REQUEST['customerid']) && !empty($_REQUEST['customerid'])) {
-        $customerid = $_REQUEST['customerid']; 
+    if(isset($_REQUEST['CustomerID']) && !empty($_REQUEST['CustomerID'])) {
+        $CustomerID = $_REQUEST['CustomerID']; 
     }
     else {
-        $customerid = NULL;
+        $CustomerID = NULL;
     }
-    if($customerid):
+    if($CustomerID):
 ?>
 <?php 
-    $customer = array("CustomerID" => 1, "name" => "Cody Hoeft", "address" => "654 Washington Ave", "phone" => "541-867-5309", "email" => "hoeftc@onid.oregonstate.edu"); //FIX ME
-    //$customer = getcustomer($customerid);
+    $customer = get_customer($CustomerID);
 ?>
 <div>
 	<div class="panel panel-default">
@@ -39,19 +39,19 @@
                 <tbody>
                     <tr>
                         <td>Name</td>
-                        <td><?php echo_data($customer, 'name'); ?></td>
+                        <td><?php echo_data($customer, 'Name'); ?></td>
                     </tr>
                     <tr>
                         <td>Address</td>
-                        <td><?php echo_data($customer, 'address'); ?></td>
+                        <td><?php echo_data($customer, 'Address'); ?></td>
                     </tr>
                     <tr>
                         <td>Phone</td>
-                        <td><?php echo_data($customer, 'phone'); ?></td>
+                        <td><?php echo_data($customer, 'Phone'); ?></td>
                     </tr>
                     <tr>
                         <td>Email</td>
-                        <td><?php echo_data($customer, 'email'); ?></td>
+                        <td><?php echo_data($customer, 'Email'); ?></td>
                     </tr>
                 <tbody>
                 <!--
@@ -62,12 +62,11 @@
                 </tfoot>
                 -->
             </table>
-            <p class="text-center"><a class="btn btn-info" href="editcustomer.php?customerid=<?php echo $customerid; ?>">Edit Customer</a></p>
+            <p class="text-center"><a class="btn btn-info" href="editcustomer.php?CustomerID=<?php echo $CustomerID; ?>">Edit Customer</a></p>
 		</div>
     </div>
-<?php 
-    $data = array(array("OrderID" => 10, "DateOrdered" => "2014-01-01", "QuotedPrice" => 100.00, "Paid" => 0.00, "CustomerID" => 1, "Complete" => True, "PickUp" => False, "CustomerName" => "Cody Ray Hoeft")); //FIX ME
-    //$data = selectordersfromcustomer($customerid);
+<?php
+	$data = select_orders_from_customer($CustomerID);
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -131,7 +130,7 @@
 			<h3 class="panel-title">Error</h3>
 		</div>
 		<div class="panel-body">
-			<p>We are missing some information nessasary to display this page. This page requires the customerid before it can be displayed</p>
+			<p>We are missing some information necessary to display this page. This page requires the CustomerID before it can be displayed</p>
 		</div>
 	</div>
 
