@@ -41,10 +41,10 @@
                                     <a href="listorders.php">List All Orders</a>
                                 </li>
                                 <li>
-                                    <a href="listbaskets_notpickedup.php">List Baskets that Need to Be Picked Up</a>
+                                    <a href="listcontainers_notpickedup.php">List Containers that Need to Be Picked Up</a>
                                 </li>
                                 <li>
-                                    <a href="listbaskets_markcomplete.php">List Incomplete Baskets</a>
+                                    <a href="listcontainers_markcomplete.php">List Incomplete Containers</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

@@ -116,7 +116,7 @@
     <div class="panel-body">
 		<?php if($ContainerID != NULL): ?>
         <p>Plant has been Created and Added to Container</p>
-        <a href='editcontainer.php?ContainerID=<?php echo $ContainerID; ?>' class="btn btn-default">Return to Container</a>
+        <span class="btn-group"><a href='editcontainer.php?ContainerID=<?php echo $ContainerID; ?>' class="btn btn-default">Return to Container</a><a href='editplant.php?ContainerID=<?php echo $ContainerID; ?>' class="btn btn-default">Add Another Plant to Container</a></span>
 		<?php else: ?>
         <p>Plant has been Created</p>
         <a href='javascript:window.location.href=window.location.href' class="btn btn-default">Add Another New Plant</a>
