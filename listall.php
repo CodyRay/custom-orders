@@ -1,8 +1,7 @@
 <?php
 	$page_title = "Index";
-	$page_subtitle = "The Home Page";
+	$page_subtitle = "List";
     include("templates/header.php");
-    include("inc/database.php"); 
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
