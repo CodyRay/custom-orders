@@ -1,4 +1,6 @@
 <?php
+	include("inc/sql_queries.php");
+
 	$page_title = "Customer";
 	$page_subtitle = "List";
     include("inc/database.php"); 
@@ -14,8 +16,7 @@
 ?>
 <div class="col-lg-12">
 <?php 
-    $data = array(array("CustomerID" => 1, "name" => "Cody Hoeft", "address" => "654 Washington Ave", "phone" => "541-867-5309", "email" => "hoeftc@onid.oregonstate.edu")); //FIX ME
-    //$data = selecttable('customer');
+    $data = select_all_customers();
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -38,14 +39,14 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "viewcustomer.php?customerid=".$row['CustomerID'];
+            $rowlink = "viewcustomer.php?CustomerID=".$row['CustomerID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
-                    <td><?php echo_data($row, 'name'); ?></td>
-                    <td><?php echo_data($row, 'address'); ?></td>
-                    <td><?php echo_data($row, 'phone'); ?></td>
-                    <td><?php echo_data($row, 'email'); ?></td>
+                    <td><?php echo_data($row, 'Name'); ?></td>
+                    <td><?php echo_data($row, 'Address'); ?></td>
+                    <td><?php echo_data($row, 'Phone'); ?></td>
+                    <td><?php echo_data($row, 'Email'); ?></td>
                 </tr>
 <?php 
         endforeach; 

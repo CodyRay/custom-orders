@@ -1,32 +1,32 @@
 <?php
 	$page_title = "Order";
 	$page_subtitle = "Edit";
-
+	
+	include("inc/sql_queries.php");
     //Is the user submiting the form?
     $post = $_SERVER['REQUEST_METHOD'] == "POST"; //Bool
 
     //Is the entry going to be new or updating?
-    $new = !(isset($_REQUEST['orderid']) && !empty($_REQUEST['orderid'])); //Bool
+    $new = !(isset($_REQUEST['OrderID']) && !empty($_REQUEST['OrderID'])); //Bool
 	
-    if(isset($_REQUEST['orderid']) && !empty($_REQUEST['orderid'])) {
-        $orderid = $_REQUEST['orderid']; 
+    if(isset($_REQUEST['OrderID']) && !empty($_REQUEST['OrderID'])) {
+        $OrderID = $_REQUEST['OrderID']; 
     }
     else {
-        $orderid = NULL;
+        $OrderID = NULL;
     }
 	
-    if(isset($_REQUEST['customerid']) && !empty($_REQUEST['customerid'])) {
-        $customerid = $_REQUEST['customerid']; 
+    if(isset($_REQUEST['CustomerID']) && !empty($_REQUEST['CustomerID'])) {
+        $CustomerID = $_REQUEST['CustomerID']; 
     }
     else {
-        $customerid = NULL;
+        $CustomerID = NULL;
     }
 	
 	//There is the special case here that there is a new basket being created, this is done automatically in the background
-	if($new && $customerid != NULL) {
-		//$orderid = createorder($customerid);
-		$orderid = 10;
-		header("Location: editorder.php?orderid=".$orderid);
+	if($new && $CustomerID != NULL) {
+		$OrderID = create_blank_order($CustomerID);
+		header("Location: editorder.php?OrderID=".$OrderID);
 		exit(0);
 	}
 	
@@ -41,7 +41,7 @@
 	
     //We need to handle the case that we are updating the data
     if(!$post) { //If we use post it could overwrite data
-        //query = getorder($orderid);
+        //query = getorder($OrderID);
         $query = array();
         $data = array_unique(array_merge($_REQUEST, $query));
     }
@@ -92,7 +92,7 @@
 //Template Zone, try to keep functionality out of here when possible. Limiting to simple loops and if statements
 //////////////////////////////////
 include("templates/header.php");
-if($orderid != NULL):
+if($OrderID != NULL):
     if(validate_submit()): //If Valid and Sumbited, Render Success Message; else form...
         update_database();
 
@@ -121,7 +121,7 @@ if($orderid != NULL):
     <div class="panel-body">
         <form method="POST">
 
-          <input name="orderid" type="hidden" value="<?php echo_data($data,"orderid");?>">
+          <input name="OrderID" type="hidden" value="<?php echo_data($data,"OrderID");?>">
 
           <div class="form-group">
             <label for="DateOrdered">Date Ordered</label>
@@ -165,7 +165,7 @@ if($orderid != NULL):
 <?php 
 	endif;
     $containers = array(array("ContainerID" => 1, "Shape" => "12inch", "Color" => "Red", "Desc" => "Much Wow", "Weight" => "12lbs")); //FIX ME
-    //$containers = selectcontainersfromorder($orderid);
+    //$containers = selectcontainersfromorder($OrderID);
 
 ?>
 	<div class="panel panel-default">
@@ -199,7 +199,7 @@ if($orderid != NULL):
                     <td><?php echo_data($row, 'Weight'); ?></td>
                     <td><?php echo_data($row, 'Desc'); ?></td>
 					<td class="text-center"><a href="<?php echo "editcontainer.php?containerid=".$row['ContainerID']; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
-					<td class="text-center"><a href="<?php echo "deletecontainer.php?redirect=editorder.php&containerid=".$row['ContainerID']."&orderid=".$orderid.(isset($_REQUEST['admin']) ? "&admin" : ""); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+					<td class="text-center"><a href="<?php echo "deletecontainer.php?redirect=editorder.php&containerid=".$row['ContainerID']."&OrderID=".$OrderID.(isset($_REQUEST['admin']) ? "&admin" : ""); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
                 </tr>
 <?php 
         endforeach; 
@@ -220,7 +220,7 @@ if($orderid != NULL):
 <?php
     endif;
 ?>
-		<p class="text-center"><a class="btn btn-info" href="editcontainer.php?orderid=<?php echo $orderid; ?>">Add Container</a></p>
+		<p class="text-center"><a class="btn btn-info" href="editcontainer.php?OrderID=<?php echo $OrderID; ?>">Add Container</a></p>
 		</div>
 	</div>
 <?php //End Success
@@ -231,9 +231,9 @@ if($orderid != NULL):
 			</div>
 			<div class="panel-body text-center">
 			<?php if(!isset($data['submitted']) || !$data['submitted']): ?>
-				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?orderid=<?php echo $orderid; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?orderid=<?php echo $orderid; ?>">Submit Order</a></p>
+				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?OrderID=<?php echo $OrderID; ?>">Submit Order</a></p>
 			<?php else: ?>
-				<p><a class="btn btn-danger" href="deleteorder.php?orderid=<?php echo $orderid; ?>">Cancel Order</a></p>
+				<p><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Cancel Order</a></p>
 			</div>
 		</div>
 <?php
@@ -244,7 +244,7 @@ else: ?>
 			<h3 class="panel-title">Error</h3>
 		</div>
 		<div class="panel-body">
-			<p>We are missing some information necessary to display this page. This page requires the orderid before it can be displayed</p>
+			<p>We are missing some information necessary to display this page. This page requires the OrderID before it can be displayed</p>
 		</div>
 	</div>
 <?php
