@@ -231,7 +231,7 @@ if($OrderID != NULL):
 				<h3 class="panel-title">Order Actions</h3>
 			</div>
 			<div class="panel-body text-center">
-			<?php if(!($data['DateOrdered']="0000-00-00")): ?>
+			<?php if(($data['DateOrdered']="0000-00-00")): ?>
 				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?OrderID=<?php echo $OrderID; ?>">Submit Order</a></p>
 			<?php else: ?>
 				<p><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Cancel Order</a></p>

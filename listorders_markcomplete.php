@@ -1,5 +1,5 @@
 <?php
-	$page_title = "Containers";
+	$page_title = "Orders";
 	$page_subtitle = "Incomplete";
     include("templates/header.php");
     function echo_data($data, $item) {
@@ -14,7 +14,7 @@
 <div class="col-lg-12">
 <?php 
     $data = array(); //FIX ME
-    //$data = selecttable('customer');
+    //$data = ;
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -40,7 +40,7 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "viewcontainer.php?ContainerID=".$row['ContainerID'];
+            $rowlink = "vieworder.php?OrderID=".$row['OrderID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
 					<td class="text-center" style="width: 50px;"><?php //Checkbox ?>

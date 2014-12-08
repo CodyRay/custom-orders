@@ -1,6 +1,6 @@
 <?php
 	$page_title = "Orders";
-	$page_subtitle = "List";
+	$page_subtitle = "Completed, but Not Picked Up";
     include("templates/header.php");
     function echo_data($data, $item) {
         /*
@@ -27,14 +27,13 @@
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
+					<th></th>
                     <th></th>
-                    <th>Date Ordered</th>
                     <th>Quoted Price</th>
-                    <th>Actual Price</th>
-                    <th>Balance Due</th>
-                    <th>Completed</th>
-                    <th>Picked Up</th>
-                    <th>Customer Name</th>
+					<th>Actual Price</th>
+					<th>Balance Due</th>
+					<th></th>
+					<th>Customer Name</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,14 +42,15 @@
             $rowlink = "vieworder.php?OrderID=".$row['OrderID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
+					<td class="text-center" style="width: 50px;"><?php //Checkbox ?>
+					  	    <input name="<?php echo $plant["PlantID"]; ?>" type="checkbox" value='<?php echo $plant["PlantID"]; ?>'>
+					</td>
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
-                    <td><?php echo_data($row, 'DateOrdered'); ?></td>
                     <td><?php echo_data($row, 'QuotedPrice'); ?></td>
                     <td><?php echo_data($row, 'ActualPrice'); ?></td>
                     <td><?php echo_data($row, 'BalanceDue'); ?></td>
-                    <td><?php echo_data($row, 'Completed'); ?></td>
-                    <td><?php echo_data($row, 'PickedUp'); ?></td>
-                    <td><?php echo_data($row, 'Name'); ?></td>
+                    <<td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+                    <td><?php echo_data($row, 'CustomerName'); ?></td>
                 </tr>
 <?php 
         endforeach; 

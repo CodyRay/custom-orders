@@ -359,15 +359,16 @@ if( ( $new && $OrderID != NULL ) || ( !$new && $ContainerID != NULL ) ):
             </tfoot>
             -->
         </table>
-		<p class="text-center"><span class="btn-group"><a class="btn btn-default" href="editplant.php?containerid=<?php echo $containerid; ?>">Create New Plant</a><a class="btn btn-default" href="editcontainer_addexistingplants.php?containerid=<?php echo $containerid; ?>">Add Plants</a></span></p>
 
 <?php
     else:
 ?>
         <p>Sorry There is No Data Yet</p>
+
 <?php
     endif;
 ?>
+		<p class="text-center"><span class="btn-group"><a class="btn btn-default" href="editplant.php?containerid=<?php echo $containerid; ?>">Create New Plant</a><a class="btn btn-default" href="editcontainer_addexistingplants.php?containerid=<?php echo $containerid; ?>">Add Plants</a></span></p>
 		</div>
 	</div>
 </div>

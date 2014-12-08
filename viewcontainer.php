@@ -113,6 +113,8 @@
 <?php
     endif;
 ?>
+		<p class="text-center"><span class="btn-group"><a class="btn btn-default" href="editplant.php?ContainerID=<?php echo $ContainerID; ?>">Create New Plant</a><a class="btn btn-default" href="editcontainer_addexistingplants.php?ContainerID=<?php echo $ContainerID; ?>">Add Plants</a></span></p>
+
 		</div>
 	</div>
 </div>
