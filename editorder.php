@@ -46,6 +46,12 @@
     }
     else {
         $data = $_REQUEST;
+		if(!isset($data["Complete"])) {
+			$data["Complete"] = 0;
+		}
+		if(!isset($data["PickedUp"])) {
+			$data["PickedUp"] = 0;
+		}
     }
 
 
@@ -93,6 +99,18 @@
 //////////////////////////////////
 include("templates/header.php");
 if($OrderID != NULL):
+
+?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><?php echo "Navigation"; ?></h3>
+    </div>
+    <div class="panel-body text-center">
+        <a href='vieworder.php?OrderID=<?php echo $OrderID; ?>' class="btn btn-default">Return to Container View</a>
+    </div>
+</div>
+<?php
+
     if(validate_submit()): //If Valid and Sumbited, Render Success Message; else form...
         update_database();
 
@@ -181,6 +199,7 @@ if($OrderID != NULL):
             <thead>
                 <tr>
                     <th></th>
+					<th>Quantity</th>
                     <th>Shape</th>
                     <th>Color</th>
                     <th>Weight</th>
@@ -195,6 +214,7 @@ if($OrderID != NULL):
 ?>
                 <tr>
                     <td class="text-center"><a href="<?php echo "viewcontainer.php?ContainerID=".$row['ContainerID']; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+					<td><?php echo_data($row, 'Quantity'); ?></td>
                     <td><?php echo_data($row, 'Shape'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>
                     <td><?php echo_data($row, 'Weight'); ?></td>
@@ -231,14 +251,14 @@ if($OrderID != NULL):
 				<h3 class="panel-title">Order Actions</h3>
 			</div>
 			<div class="panel-body text-center">
-			<?php if(($data['DateOrdered']="0000-00-00")): ?>
+			<?php if(($data['DateOrdered']=="0000-00-00")): ?>
 				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?OrderID=<?php echo $OrderID; ?>">Submit Order</a></p>
 			<?php else: ?>
 				<p><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Cancel Order</a></p>
+			<?php endif; ?>
 			</div>
 		</div>
 <?php
-		endif;
 else: ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">

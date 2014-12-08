@@ -59,6 +59,10 @@
 //////////////////////////////////
 if($ContainerID != NULL):
 	$plants = select_all_plants($ContainerID);
+	if(!count($plants)) {
+		header("Location: editcontainer.php?ContainerID=".$ContainerID);
+		exit(0);
+	}
     if(validate_submit()): //If Valid and Sumbited
         foreach($plants as $plant) {
 			if(in_array($plant["PlantID"], $_REQUEST)) {
@@ -70,7 +74,6 @@ if($ContainerID != NULL):
 		exit(0);
     else:
 	include("templates/header.php"); //It is ok to move this down here because there is no form validation to worry about
-
 //Form only rendered if validate ?>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -113,7 +116,6 @@ else:
 ?>
 
 <?php
-
 
 endif;
 ?>

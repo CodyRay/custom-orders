@@ -32,25 +32,39 @@
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>Attribute</th>
+                        <th colspan="2">Attribute</th>
                         <th>Value</th>
                     </tr>
                 </thead>
                 <tbody>
+				    <tr>
+                        <td colspan="2">Quantity</td>
+                        <td><?php echo_data($container, 'Quantity'); ?></td>
+                    </tr>
                     <tr>
-                        <td>Shape</td>
+                        <td colspan="2">Shape</td>
                         <td><?php echo_data($container, 'Shape'); ?></td>
                     </tr>
                     <tr>
-                        <td>Color</td>
+                        <td colspan="2">Color</td>
                         <td><?php echo_data($container, 'Color'); ?></td>
                     </tr>
                     <tr>
-                        <td>Weight</td>
+                        <td colspan="2">Weight</td>
                         <td><?php echo_data($container, 'Weight'); ?></td>
                     </tr>
+					<tr>
+						<td>Customer</td>
+						<td class="text-center"><a href="<?php echo "viewcustomer.php?CustomerID=".$container["CustomerID"]; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+						<td><?php echo_data($container, 'Name'); ?></td>
+					</tr>
+					<tr>
+						<td>Order</td>
+						<td class="text-center"><a href="<?php echo "vieworder.php?OrderID=".$container["OrderID"]; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+						<td><?php echo_data($container, 'DateOrdered'); ?></td>
+					</tr>
                     <tr>
-                        <td>Description</td>
+                        <td colspan="2">Description</td>
                         <td><?php echo_data($container, 'Desc'); ?></td>
                     </tr>
                 <tbody>
@@ -79,6 +93,7 @@
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
+                    <th>Quantity</th>
                     <th>Name</th>
                     <th>Scientific Name</th>
                     <th>Color</th>
@@ -87,9 +102,9 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "editplant.php?PlantID=".$row['PlantID'];
 ?>
-                <tr data-href="<?php echo $rowlink; ?>">
+                <tr>
+                    <td><?php echo_data($row, 'Quantity'); ?></td>
                     <td><?php echo_data($row, 'CommonName'); ?></td>
                     <td><?php echo_data($row, 'ScientificName'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>

@@ -7,7 +7,7 @@
         /*
         Echos existing data, makes sure that it exists
         */ 
-        if(isset($data[$item]) && !empty($data[$item])) {
+        if(isset($data[$item])) {
             echo $data[$item];
         }
     }
@@ -18,12 +18,12 @@
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Data</h3>
+			<h3 class="panel-title">All Orders</h3>
 		</div>
         <div class="panel-body">
 <?php
     if(count($data)):
-?>
+?>	
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
@@ -39,15 +39,15 @@
             <tbody>
 <?php 
         foreach($data as $row):
-            $rowlink = "vieworder.php?OrderID=".$row['OrderID'];
+            $rowlink = "editorder.php?admin&OrderID=".$row['OrderID'];
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
-                    <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+                    <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
                     <td><?php echo_data($row, 'DateOrdered'); ?></td>
                     <td><?php echo_data($row, 'QuotedPrice'); ?></td>
                     <td><?php echo_data($row, 'TotalPaid'); ?></td>
-                    <td><?php echo_data($row, 'Complete'); ?></td>
-                    <td><?php echo_data($row, 'PickedUp'); ?></td>
+					<td class="text-center"><span class="glyphicon <?php echo $order['Complete'] ? "glyphicon-ok" : "glyphicon-remove"; ?>"></span></td>
+                    <td class="text-center"><span class="glyphicon <?php echo $order['PickedUp'] ? "glyphicon-ok" : "glyphicon-remove"; ?>"></span></td>
                     <td><?php echo_data($row, 'Name'); ?></td>
                 </tr>
 <?php 

@@ -34,7 +34,18 @@
         $data = $_REQUEST;
     }
 
-
+	if($post && isset($_REQUEST['action']) && $_REQUEST['action'] == "Update Quantities") {
+		$plants = select_plants_from_container($ContainerID);
+		foreach($plants as $plant) {
+			if(isset($_REQUEST[$plant["PlantID"]])) {
+				//update_quantity($plant["PlantID"], $ContainerID);
+				//echo $_REQUEST[$plant["PlantID"]];
+			}
+		}
+		header("Location: editcontainer.php?ContainerID=".$ContainerID);
+		exit(0);
+	}
+	
     function validate_submit() {
         /*
         This function returns true only if the form has been SUBMITTED with VALID data
@@ -97,6 +108,17 @@
 
 	include("templates/header.php");
 if( ( $new && $OrderID != NULL ) || ( !$new && $ContainerID != NULL ) ):
+
+?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><?php echo "Navigation"; ?></h3>
+    </div>
+    <div class="panel-body text-center">
+        <a href='viewcontainer.php?ContainerID=<?php echo $ContainerID; //FIX ME ?>' class="btn btn-default">Return to Container View</a>
+    </div>
+</div>
+<?php
     if(validate_submit()): //If Valid and Submited, Render Success Message; else form...
         update_database();
 
@@ -326,10 +348,12 @@ if( ( $new && $OrderID != NULL ) || ( !$new && $ContainerID != NULL ) ):
 <?php
     if(count($plants)):
 ?>
+	<form method="post">
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th></th>
+					<th>Quantity</th>
                     <th>Name</th>
                     <th>Scientific Name</th>
                     <th>Color</th>
@@ -340,8 +364,9 @@ if( ( $new && $OrderID != NULL ) || ( !$new && $ContainerID != NULL ) ):
 <?php 
         foreach($plants as $row):
 ?>
-                <tr>
+                <tr style="vertical-align: middle;">
                     <td class="text-center"><a href="<?php echo "editplant.php?PlantID=".$row['PlantID']; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
+					<td style="width: 80px;"><input class="form-control" name='<?php echo $row['PlantID']; ?>' value='<?php echo $row['Quantity']; ?>'></td>
                     <td><?php echo_data($row, 'CommonName'); ?></td>
                     <td><?php echo_data($row, 'ScientificName'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>
@@ -361,15 +386,22 @@ if( ( $new && $OrderID != NULL ) || ( !$new && $ContainerID != NULL ) ):
         </table>
 
 <?php
+		$display_quanity_button = True;
     else:
+		$display_quanity_button = False;
 ?>
         <p>Sorry There is No Data Yet</p>
 
 <?php
     endif;
 ?>
-		<p class="text-center"><span class="btn-group"><a class="btn btn-default" href="editplant.php?containerid=<?php echo $containerid; ?>">Create New Plant</a><a class="btn btn-default" href="editcontainer_addexistingplants.php?containerid=<?php echo $containerid; ?>">Add Plants</a></span></p>
-		</div>
+		<p class="text-center"><span class="btn-group">
+		<?php if($display_quanity_button): ?>
+		<input type="submit" name="action" value="Update Quantities" class="btn btn-default">
+		<?php endif; ?>
+		<a class="btn btn-default" href="editplant.php?ContainerID=<?php echo $ContainerID; ?>">Create New Plant</a><a class="btn btn-default" href="editcontainer_addexistingplants.php?ContainerID=<?php echo $ContainerID; ?>">Add Plants</a></span></p>
+		</form>
+		</div
 	</div>
 </div>
 <?php

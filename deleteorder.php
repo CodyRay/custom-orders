@@ -3,5 +3,5 @@
 	include("inc/sql_queries.php");
 	$data = get_order($_REQUEST["OrderID"]);
 	remove_order($_REQUEST['OrderID']); //FIXME
-	header("Location: viewcustomer.php?CustomerID=".$data['CustomerID'].(isset($_REQUEST['admin']) ? "&admin" : ""));
+	header("Location: viewcustomer.php?CustomerID=".$data['CustomerID']);
 ?>

@@ -119,6 +119,8 @@
 <?php
     endif;
 ?>
+		<p class="text-center"><a class="btn btn-success" href="editorder.php?CustomerID=<?php echo $CustomerID; ?>">Create New Order</a></p>
+
 		</div>
 	</div>
 </div>

@@ -90,6 +90,7 @@
             <thead>
                 <tr>
                     <th></th>
+					<th>Quantity</th>
                     <th>Shape</th>
                     <th>Color</th>
                     <th>Weight</th>
@@ -103,6 +104,7 @@
 ?>
                 <tr data-href="<?php echo $rowlink; ?>">
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
+					<td><?php echo_data($row, 'Quantity'); ?></td>
                     <td><?php echo_data($row, 'Shape'); ?></td>
                     <td><?php echo_data($row, 'Color'); ?></td>
                     <td><?php echo_data($row, 'Weight'); ?></td>
@@ -129,6 +131,20 @@
 ?>
 		</div>
 	</div>
+	
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Order Actions</h3>
+			</div>
+			<div class="panel-body text-center">
+			<?php if(($order['DateOrdered']=="0000-00-00")): ?>
+				<p class="btn-group"><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Delete Order</a><a class="btn btn-success" href="submitorder.php?OrderID=<?php echo $OrderID; ?>">Submit Order</a></p>
+			<?php else: ?>
+				<p><a class="btn btn-danger" href="deleteorder.php?OrderID=<?php echo $OrderID; ?>">Cancel Order</a></p>
+			<?php endif; ?>
+			</div>
+		</div>
+	
 </div>
 <?php 
     else: 

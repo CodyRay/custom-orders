@@ -9,10 +9,17 @@
     //Is the entry going to be new or updating?
     $new = !(isset($_REQUEST['CustomerID']) && !empty($_REQUEST['CustomerID'])); //Bool
 	$page_subtitle = $new ? "Create" : "Edit";
-
+	
+	if(isset($_REQUEST['CustomerID']) && !empty($_REQUEST['CustomerID'])) {
+        $CustomerID = $_REQUEST['CustomerID']; 
+    }
+    else {
+        $CustomerID = NULL;
+    }
+	
     //We need to handle the case that we are updating the data
     if(!$new && !$post) { //If we use post it could overwrite data
-        $query = get_customer($_REQUEST['CustomerID']);
+        $query = get_customer($CustomerID);
         $data = $_REQUEST + $query;
     }
     else {
@@ -66,13 +73,14 @@
     function update_database() {
 		global $new;
 		global $data;
+		global $CustomerID;
         /*
         Inserts or Updates the database with the current data
         Child Functions could render error messages (Unlikely)
         */
         if($new) {
             //Insert Function Call Here takes $data
-			create_customer($data);
+			$CustomerID = create_customer($data);
         }
         else {
             //Update Function Call Here takes $data
@@ -96,7 +104,7 @@
     </div>
     <div class="panel-body">
         <p>Welcome, <?php echo_data("Name");?></p>
-        <a href='viewcustomer.php?customerid=<?php echo $customerid; ?>' class="btn btn-default">View Customer</a>
+        <a href='viewcustomer.php?CustomerID=<?php echo $CustomerID; ?>' class="btn btn-default">View Customer</a>
     </div>
 </div>
 <?php //End Success

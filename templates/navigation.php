@@ -41,10 +41,10 @@
                                     <a href="listorders.php">List All Orders</a>
                                 </li>
                                 <li>
-                                    <a href="listorders_notpickedup.php">List Orders that Need to Be Picked Up</a>
-                                </li>
-                                <li>
-                                    <a href="listorders_markcomplete.php">List Incomplete Orders</a>
+                                    <a href="listorders_markcomplete.php">Mark Orders Complete</a>
+                                </li>                                
+								<li>
+                                    <a href="listorders_notpickedup.php">Mark Orders Picked Up</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
