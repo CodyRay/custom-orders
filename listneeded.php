@@ -2,6 +2,7 @@
 	$page_title = "Needed Plants";
 	$page_subtitle = "List";
     include("templates/header.php");
+	include("inc/sql_queries.php");
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
@@ -13,8 +14,7 @@
 ?>
 <div class="col-lg-12">
 <?php 
-    $data = array(array("CommonName" => "Petunia", "PlantID" => 3, "Color" => "Gold", "Quantity" => 10), array("CommonName" => "Petunia", "PlantID" => 2, "Color" => "Purple", "ScientificName" => "Platis Domesticus", "Quantity" => 1)); //FIX ME
-    //$data = neededplants();
+    $data = select_all_needed_plants();
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">

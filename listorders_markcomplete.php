@@ -2,6 +2,7 @@
 	$page_title = "Orders";
 	$page_subtitle = "Incomplete";
     include("templates/header.php");
+	include("inc/sql_queries.php");
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
@@ -13,8 +14,7 @@
 ?>
 <div class="col-lg-12">
 <?php 
-    $data = array(); //FIX ME
-    //$data = ;
+    $data = select_all_incomplete_orders();
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -30,8 +30,7 @@
 					<th></th>
                     <th></th>
                     <th>Quoted Price</th>
-					<th>Actual Price</th>
-					<th>Balance Due</th>
+					<th>Total Paid</th>
 					<th></th>
 					<th>Customer Name</th>
 					<th>Picked Up</th>
@@ -48,10 +47,9 @@
 					</td>
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
                     <td><?php echo_data($row, 'QuotedPrice'); ?></td>
-                    <td><?php echo_data($row, 'ActualPrice'); ?></td>
-                    <td><?php echo_data($row, 'BalanceDue'); ?></td>
+                    <td><?php echo_data($row, 'TotalPaid'); ?></td>
                     <<td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
-                    <td><?php echo_data($row, 'CustomerName'); ?></td>
+                    <td><?php echo_data($row, 'Name'); ?></td>
                     <td><?php echo_data($row, 'PickedUp'); ?></td>
                 </tr>
 <?php 

@@ -9,6 +9,8 @@
 //redirect to editcontainer
 ?>
 <?php
+	include("inc/sql_queries.php");
+
 	$page_title = "Container";
 	$page_subtitle = "Add Plants";
 
@@ -42,18 +44,21 @@
     }
     
     function add_plant($plant, $ContainerID) {
-		//echo "$plant, $ContainerID <br>	"; //FIX ME
+		$data["ContainerID"] = $ContainerID;
+		$data["PlantID"] = $plant;
+		$data["Quantity"] = 1;
         /*
         Inserts or Updates the database with the current data
         Child Functions could render error messages (Unlikely)
 		*/
+		$ContainerID = create_container_plant($data);
     }
 
 //////////////////////////////////
 //Template Zone, try to keep functionality out of here when possible. Limiting to simple loops and if statements
 //////////////////////////////////
 if($ContainerID != NULL):
-	$plants = array(array("CommonName" => "Petunia", "PlantID" => 3, "Color" => "Gold"), array("CommonName" => "Petunia", "PlantID" => 2, "Color" => "Purple", "ScientificName" => "Platis Domesticus"));
+	$plants = select_all_plants($ContainerID);
     if(validate_submit()): //If Valid and Sumbited
         foreach($plants as $plant) {
 			if(in_array($plant["PlantID"], $_REQUEST)) {

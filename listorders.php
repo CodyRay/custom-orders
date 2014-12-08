@@ -2,6 +2,7 @@
 	$page_title = "Orders";
 	$page_subtitle = "List";
     include("templates/header.php");
+	include("inc/sql_queries.php");
     function echo_data($data, $item) {
         /*
         Echos existing data, makes sure that it exists
@@ -13,8 +14,7 @@
 ?>
 <div class="col-lg-12">
 <?php 
-    $data = array(); //FIX ME
-    //$data = selecttable('customer');
+    $data = select_all_orders();
 ?>
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -30,8 +30,7 @@
                     <th></th>
                     <th>Date Ordered</th>
                     <th>Quoted Price</th>
-                    <th>Actual Price</th>
-                    <th>Balance Due</th>
+                    <th>Total Paid</th>
                     <th>Completed</th>
                     <th>Picked Up</th>
                     <th>Customer Name</th>
@@ -46,9 +45,8 @@
                     <td class="text-center"><a href="<?php echo $rowlink; ?>"><span class="glyphicon glyphicon-search"></span></a></td>
                     <td><?php echo_data($row, 'DateOrdered'); ?></td>
                     <td><?php echo_data($row, 'QuotedPrice'); ?></td>
-                    <td><?php echo_data($row, 'ActualPrice'); ?></td>
-                    <td><?php echo_data($row, 'BalanceDue'); ?></td>
-                    <td><?php echo_data($row, 'Completed'); ?></td>
+                    <td><?php echo_data($row, 'TotalPaid'); ?></td>
+                    <td><?php echo_data($row, 'Complete'); ?></td>
                     <td><?php echo_data($row, 'PickedUp'); ?></td>
                     <td><?php echo_data($row, 'Name'); ?></td>
                 </tr>

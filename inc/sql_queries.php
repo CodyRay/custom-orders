@@ -847,7 +847,44 @@ function select_all_orders()
 	if ($con = openconnection())
 	{
 		// Gets the Orders
-		if ($query = $con->prepare("SELECT * FROM `Order`"))
+		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
+			WHERE Customer.CustomerID = `Order`.CustomerID"))
+		{
+			$query->execute();
+			if ($query->error)
+			{
+				//If there are errors, display them
+				$error = array($querry->error);
+				render_errors($error, "MySQL Reported an Error Executing a Query");
+				$con->close();
+				return NULL;
+			}
+		}
+
+		$response = $query->get_result();
+		while($row = $response->fetch_assoc())
+			$result[] = $row;
+		if(isset($result))
+			return $result; // Returning the entire array
+		else
+			return NULL;
+		
+		$con->close();
+	}
+}
+
+/*
+ * Function: select_all_orders_notpickedup()
+ * Description: Selects all orders in the database
+ */
+function select_all_orders_notpickedup()
+{
+	if ($con = openconnection())
+	{
+		// Gets the Orders
+		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
+			WHERE Customer.CustomerID = `Order`.CustomerID
+				AND `Order`.PickedUp = '0' AND `Order`.Complete = '1'"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -881,7 +918,9 @@ function select_all_incomplete_orders()
 	if ($con = openconnection())
 	{
 		// Gets the Orders
-		if ($query = $con->prepare("SELECT * FROM `Order` WHERE Complete = '0'"))
+		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
+			WHERE Customer.CustomerID = `Order`.CustomerID
+				AND Complete = '0'"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -911,13 +950,16 @@ function select_all_incomplete_orders()
  * Description: Selects all plants in the database
  * Returns: The resulting array
  */
-function select_all_plants()
+function select_all_plants($ContainerID)
 {
 	if ($con = openconnection())
 	{
 		// Gets the Plants
-		if ($query = $con->prepare("SELECT * FROM Plant"))
+		if ($query = $con->prepare("SELECT * FROM Plant
+			WHERE PlantID NOT IN (SELECT PlantID FROM ContainerPlant
+				WHERE ContainerID = ?)"))
 		{
+			$query->bind_param("i", $ContainerID);
 			$query->execute();
 			if ($query->error)
 			{
