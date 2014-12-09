@@ -1,7 +1,4 @@
 <?php
-	error_reporting(E_ALL);
-	ini_set('display_errors', True);
-	mysqli_report(MYSQLI_REPORT_STRICT);
 	//Global Variables and functions, do not echo text
 	$website_name = "Custom Orders";
 	$website_desc = "Custom Hanging Baskets and Pot Orders";
