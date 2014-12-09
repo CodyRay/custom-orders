@@ -998,13 +998,27 @@ function select_all_needed_plants()
 	if ($con = openconnection())
 	{
 		// Gets the Plants
-		if ($query = $con->prepare("SELECT Plant.CommonName, Plant.Color, SUM(ContainerPlant.Quantity) AS Quantity
-			FROM `Order`, Container, ContainerPlant, Plant
-			WHERE `Order`.OrderID = Container.OrderID
-				AND Container.ContainerID = ContainerPlant.ContainerID
-				AND Plant.PlantID = ContainerPlant.PlantID
-				AND YEAR(`Order`.DateOrdered) = YEAR(CURDATE())
-				GROUP BY Plant.PlantID"))
+		if ($query = $con->prepare("
+		SELECT `PlantID`, 
+			   `CommonName`, 
+			   `Color`, 
+			   `ScientificName`, 
+			   Sum(`Quantity`) AS `Quantity` 
+		FROM   (SELECT `Plant`.`PlantID`, 
+					   `Plant`.`CommonName`, 
+					   `Plant`.`Color`, 
+					   `Plant`.`ScientificName`, 
+					   `ContainerPlant`.`Quantity` * `Container`.`Quantity` AS 
+					   `Quantity` 
+				FROM   `Plant`, 
+					   `Container`, 
+					   `ContainerPlant` 
+				WHERE  `Plant`.`PlantID` = `ContainerPlant`.`PlantID` 
+					   AND `Container`.`ContainerID` = `ContainerPlant`.`ContainerID`) 
+			   AS 
+			   `Subtotal` 
+		GROUP  BY `PlantID`; 
+		"))
 		{
 			$query->execute();
 			if ($query->error)
