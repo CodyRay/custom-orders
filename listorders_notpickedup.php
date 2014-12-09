@@ -17,7 +17,7 @@
 	if($post) {
 		foreach($data as $item) {
 					if(in_array($item["OrderID"], $_REQUEST)) {
-							//set_complete($item["OrderID"]); //FIX ME
+							set_pickedup($item["OrderID"]); //FIX ME
 					}
 			}
 			header("Location: listorders_notpickedup.php");

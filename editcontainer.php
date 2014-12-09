@@ -38,8 +38,7 @@
 		$plants = select_plants_from_container($ContainerID);
 		foreach($plants as $plant) {
 			if(isset($_REQUEST[$plant["PlantID"]])) {
-				//update_quantity($plant["PlantID"], $ContainerID);
-				//echo $_REQUEST[$plant["PlantID"]];
+				update_quantity($plant["PlantID"], $ContainerID, $_REQUEST[$plant["PlantID"]]);
 			}
 		}
 		header("Location: editcontainer.php?ContainerID=".$ContainerID);

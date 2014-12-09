@@ -739,15 +739,17 @@ function get_container($container_id)
 	if ($con = openconnection())
 	{
 		// Get the Container
-		if ($query = $con->prepare("SELECT * FROM Container
-			WHERE ContainerID = ?"))
+		if ($query = $con->prepare("SELECT * FROM Container, Customer, `Order`
+			WHERE Customer.CustomerID = `Order`.CustomerID
+				AND `Order`.OrderID = Container.OrderID
+				AND ContainerID = ?"))
 		{
 			$query->bind_param("i", $container_id);
 			$query->execute();
 			if ($query->error)
 			{
 				//If there are errors, display them
-				$error = array($querry->error);
+				$error = array($query->error);
 				render_errors($error, "MySQL Reported an Error Executing a Query");
 				$con->close();
 				return NULL;
@@ -848,7 +850,8 @@ function select_all_orders()
 	{
 		// Gets the Orders
 		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
-			WHERE Customer.CustomerID = `Order`.CustomerID"))
+			WHERE Customer.CustomerID = `Order`.CustomerID
+			ORDER BY `Order`.DateOrdered DESC"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -884,7 +887,8 @@ function select_all_orders_notpickedup()
 		// Gets the Orders
 		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
 			WHERE Customer.CustomerID = `Order`.CustomerID
-				AND `Order`.PickedUp = '0' AND `Order`.Complete = '1'"))
+				AND `Order`.PickedUp = '0' AND `Order`.Complete = '1'
+			ORDER BY `Order`.DateOrdered DESC"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -920,7 +924,8 @@ function select_all_incomplete_orders()
 		// Gets the Orders
 		if ($query = $con->prepare("SELECT * FROM `Order`, Customer
 			WHERE Customer.CustomerID = `Order`.CustomerID
-				AND Complete = '0'"))
+				AND Complete = '0'
+			ORDER BY `Order`.DateOrdered DESC"))
 		{
 			$query->execute();
 			if ($query->error)
@@ -993,7 +998,7 @@ function select_all_needed_plants()
 	if ($con = openconnection())
 	{
 		// Gets the Plants
-		if ($query = $con->prepare("SELECT Plant.CommonName, Plant.Color, COUNT(ContainerPlant.Quantity) AS Quantity
+		if ($query = $con->prepare("SELECT Plant.CommonName, Plant.Color, SUM(ContainerPlant.Quantity) AS Quantity
 			FROM `Order`, Container, ContainerPlant, Plant
 			WHERE `Order`.OrderID = Container.OrderID
 				AND Container.ContainerID = ContainerPlant.ContainerID
@@ -1033,7 +1038,7 @@ function set_complete($order_id)
 {
 	if ($con = openconnection())
 	{
-		if ($query = $con->prepare("UPDATE TABLE `Order` SET Complete = '1'
+		if ($query = $con->prepare("UPDATE `Order` SET Complete = '1'
 			WHERE OrderID=?"))
 		{
 			$query->bind_param("i", $order_id);
@@ -1049,5 +1054,58 @@ function set_complete($order_id)
 		}
 	}
 }
- 
+
+/*
+ * Function: set_pickedup()
+ * Description: Updates an Order in the database to be set to "PickedUp"
+ * Parameters: The Order's ID
+ */
+function set_pickedup($order_id)
+{
+	if ($con = openconnection())
+	{
+		if ($query = $con->prepare("UPDATE `Order` SET PickedUp = '1'
+			WHERE OrderID=?"))
+		{
+			$query->bind_param("i", $order_id);
+			$query->execute();
+			if ($query->error)
+			{
+				//If there are errors, display them
+				$error = array($querry->error);
+				render_errors($error, "MySQL Reported an Error Executing a Query");
+				$con->close();
+				return NULL;
+			}
+		}
+	}
+}
+
+/*
+ * Function: update_quantity()
+ * Description: Updates the quantity of the plants in a 
+ * Parameters: The PlantID and ContainerID to reference a relationship, and the quantity of plants
+ * Postconditions: The Quantity will be updated
+ */
+function update_quantity($PlantID, $ContainerID, $Quantity)
+{
+	if ($con = openconnection())
+	{
+		// Alters the Quantity attribute in the ContainerPlant row
+		if ($query = $con->prepare("UPDATE ContainerPlant SET Quantity = ?
+			WHERE ContainerID = ? AND PlantID = ?"))
+		{
+			$query->bind_param("iii", $Quantity, $ContainerID, $PlantID);
+			$query->execute();
+			if ($query->error)
+			{
+				//If there are errors, display them
+				$error = array($query->error);
+				render_errors($error, "MySQL Reported an Error Executing a Query");
+				$con->close();
+				return NULL;
+			}
+		}
+	}
+}
 ?>
