@@ -57,7 +57,7 @@
                     <td><?php echo_data($row, 'QuotedPrice'); ?></td>
                     <td><?php echo_data($row, 'TotalPaid'); ?></td>
                     <td><?php echo_data($row, 'Name'); ?></td>
-					<td class="text-center"><span class="glyphicon <?php echo $order['PickedUp'] ? "glyphicon-ok" : "glyphicon-remove"; ?>"></span></td>
+					<td class="text-center"><span class="glyphicon <?php echo $row['PickedUp'] ? "glyphicon-ok" : "glyphicon-remove"; ?>"></span></td>
                 </tr>
 <?php 
         endforeach; 
